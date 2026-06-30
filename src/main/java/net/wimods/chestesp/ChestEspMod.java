@@ -21,6 +21,7 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -104,20 +105,22 @@ public final class ChestEspMod
 		return enabled && configHolder.get().style.hasLines();
 	}
 	
-	public void onRender(PoseStack matrixStack, float partialTicks)
+	public void onRender(PoseStack matrixStack, float partialTicks,
+		SubmitNodeCollector submitter, Vec3 cameraPos)
 	{
 		groups.entityGroups.stream().filter(ChestEspGroup::isEnabled)
 			.forEach(g -> g.updateBoxes(partialTicks));
 		
 		ChestEspStyle style = configHolder.get().style;
 		if(style.hasBoxes())
-			renderBoxes(matrixStack);
+			renderBoxes(matrixStack, submitter, cameraPos);
 		
 		if(style.hasLines())
-			renderTracers(matrixStack, partialTicks);
+			renderTracers(matrixStack, partialTicks, submitter, cameraPos);
 	}
 	
-	private void renderBoxes(PoseStack matrixStack)
+	private void renderBoxes(PoseStack matrixStack,
+		SubmitNodeCollector submitter, Vec3 cameraPos)
 	{
 		for(ChestEspGroup group : groups.allGroups)
 		{
@@ -128,13 +131,15 @@ public final class ChestEspMod
 			int quadsColor = group.getColorI(0x40);
 			int linesColor = group.getColorI(0x80);
 			
-			RenderUtils.drawSolidBoxes(matrixStack, boxes, quadsColor, false);
-			RenderUtils.drawOutlinedBoxes(matrixStack, boxes, linesColor,
-				false);
+			RenderUtils.drawSolidBoxes(matrixStack, submitter, cameraPos, boxes,
+				quadsColor, false);
+			RenderUtils.drawOutlinedBoxes(matrixStack, submitter, cameraPos,
+				boxes, linesColor, false);
 		}
 	}
 	
-	private void renderTracers(PoseStack matrixStack, float partialTicks)
+	private void renderTracers(PoseStack matrixStack, float partialTicks,
+		SubmitNodeCollector submitter, Vec3 cameraPos)
 	{
 		for(ChestEspGroup group : groups.allGroups)
 		{
@@ -145,8 +150,8 @@ public final class ChestEspMod
 			List<Vec3> ends = boxes.stream().map(AABB::getCenter).toList();
 			int color = group.getColorI(0x80);
 			
-			RenderUtils.drawTracers(matrixStack, partialTicks, ends, color,
-				false);
+			RenderUtils.drawTracers(matrixStack, submitter, cameraPos,
+				partialTicks, ends, color, false);
 		}
 	}
 	

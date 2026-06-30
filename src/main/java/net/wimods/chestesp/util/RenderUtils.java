@@ -16,7 +16,7 @@ import org.joml.Vector3f;
 import net.minecraft.client.Camera;
 import net.minecraft.client.CameraType;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -30,16 +30,11 @@ public enum RenderUtils
 	
 	public static Vec3 getCameraPos()
 	{
-		Camera camera = MC.gameRenderer.getMainCamera();
+		Camera camera = MC.gameRenderer.mainCamera();
 		if(camera == null)
 			return Vec3.ZERO;
 		
 		return camera.position();
-	}
-	
-	public static MultiBufferSource.BufferSource getVCP()
-	{
-		return MC.renderBuffers().bufferSource();
 	}
 	
 	private static Vec3 getTracerOrigin(float partialTicks)
@@ -51,19 +46,23 @@ public enum RenderUtils
 		return start;
 	}
 	
-	public static void drawTracers(PoseStack matrices, float partialTicks,
+	public static void drawTracers(PoseStack matrices,
+		SubmitNodeCollector submitter, Vec3 cameraPos, float partialTicks,
 		List<Vec3> ends, int color, boolean depthTest)
 	{
-		MultiBufferSource.BufferSource vcp = getVCP();
 		RenderType layer = ChestEspRenderLayers.getLines(depthTest);
-		VertexConsumer buffer = vcp.getBuffer(layer);
 		
 		Vec3 start = getTracerOrigin(partialTicks);
-		Vec3 offset = getCameraPos().reverse();
-		for(Vec3 end : ends)
-			drawLine(matrices, buffer, start, end.add(offset), color);
-		
-		vcp.endBatch(layer);
+		Vec3 offset = cameraPos.reverse();
+		submitter.submitCustomGeometry(matrices, layer, (entry, buffer) -> {
+			for(Vec3 end : ends)
+			{
+				Vec3 shiftedEnd = end.add(offset);
+				drawLine(entry, buffer, (float)start.x, (float)start.y,
+					(float)start.z, (float)shiftedEnd.x, (float)shiftedEnd.y,
+					(float)shiftedEnd.z, color);
+			}
+		});
 	}
 	
 	public static void drawLine(PoseStack matrices, VertexConsumer buffer,
@@ -103,24 +102,28 @@ public enum RenderUtils
 			.setNormal(entry, normal).setLineWidth(2);
 	}
 	
-	public static void drawSolidBoxes(PoseStack matrices, List<AABB> boxes,
+	public static void drawSolidBoxes(PoseStack matrices,
+		SubmitNodeCollector submitter, Vec3 cameraPos, List<AABB> boxes,
 		int color, boolean depthTest)
 	{
-		MultiBufferSource.BufferSource vcp = getVCP();
 		RenderType layer = ChestEspRenderLayers.getQuads(depthTest);
-		VertexConsumer buffer = vcp.getBuffer(layer);
 		
-		Vec3 camOffset = getCameraPos().reverse();
-		for(AABB box : boxes)
-			drawSolidBox(matrices, buffer, box.move(camOffset), color);
-		
-		vcp.endBatch(layer);
+		Vec3 camOffset = cameraPos.reverse();
+		submitter.submitCustomGeometry(matrices, layer, (entry, buffer) -> {
+			for(AABB box : boxes)
+				drawSolidBox(entry, buffer, box.move(camOffset), color);
+		});
 	}
 	
 	public static void drawSolidBox(PoseStack matrices, VertexConsumer buffer,
 		AABB box, int color)
 	{
-		PoseStack.Pose entry = matrices.last();
+		drawSolidBox(matrices.last(), buffer, box, color);
+	}
+	
+	public static void drawSolidBox(PoseStack.Pose entry, VertexConsumer buffer,
+		AABB box, int color)
+	{
 		float x1 = (float)box.minX;
 		float y1 = (float)box.minY;
 		float z1 = (float)box.minZ;
@@ -159,24 +162,28 @@ public enum RenderUtils
 		buffer.addVertex(entry, x1, y2, z1).setColor(color);
 	}
 	
-	public static void drawOutlinedBoxes(PoseStack matrices, List<AABB> boxes,
+	public static void drawOutlinedBoxes(PoseStack matrices,
+		SubmitNodeCollector submitter, Vec3 cameraPos, List<AABB> boxes,
 		int color, boolean depthTest)
 	{
-		MultiBufferSource.BufferSource vcp = getVCP();
 		RenderType layer = ChestEspRenderLayers.getLines(depthTest);
-		VertexConsumer buffer = vcp.getBuffer(layer);
 		
-		Vec3 camOffset = getCameraPos().reverse();
-		for(AABB box : boxes)
-			drawOutlinedBox(matrices, buffer, box.move(camOffset), color);
-		
-		vcp.endBatch(layer);
+		Vec3 camOffset = cameraPos.reverse();
+		submitter.submitCustomGeometry(matrices, layer, (entry, buffer) -> {
+			for(AABB box : boxes)
+				drawOutlinedBox(entry, buffer, box.move(camOffset), color);
+		});
 	}
 	
 	public static void drawOutlinedBox(PoseStack matrices,
 		VertexConsumer buffer, AABB box, int color)
 	{
-		PoseStack.Pose entry = matrices.last();
+		drawOutlinedBox(matrices.last(), buffer, box, color);
+	}
+	
+	public static void drawOutlinedBox(PoseStack.Pose entry,
+		VertexConsumer buffer, AABB box, int color)
+	{
 		float x1 = (float)box.minX;
 		float y1 = (float)box.minY;
 		float z1 = (float)box.minZ;

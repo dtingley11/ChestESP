@@ -35,6 +35,7 @@ import net.fabricmc.fabric.impl.client.gametest.screenshot.TestScreenshotCompari
 import net.fabricmc.fabric.impl.client.gametest.threading.ThreadingImpl;
 import net.minecraft.client.gui.screens.TitleScreen;
 import net.minecraft.commands.CommandSourceStack;
+import net.wimods.chestesp.gametest.mixin.MinecraftAccessor;
 
 public enum WiModsTestHelper
 {
@@ -212,7 +213,8 @@ public enum WiModsTestHelper
 	public static void waitForTitleScreenFade(ClientGameTestContext context)
 	{
 		context.waitFor(mc -> {
-			if(!(mc.screen instanceof TitleScreen titleScreen))
+			if(!(((MinecraftAccessor)mc)
+				.chestesp_getScreen() instanceof TitleScreen titleScreen))
 				return false;
 			
 			return !titleScreen.fading;
