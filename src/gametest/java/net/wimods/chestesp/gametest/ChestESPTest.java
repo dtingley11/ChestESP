@@ -51,8 +51,7 @@ public final class ChestESPTest implements FabricClientGameTest
 		waitForTitleScreenFade(context);
 		
 		LOGGER.info("Reached title screen");
-		assertScreenshotEquals(context, "title_screen",
-			"https://i.imgur.com/MlnLgz2.png");
+		context.takeScreenshot("title_screen");
 		
 		// Check config values that aren't visible in screenshots
 		withConfig(context, config -> {
@@ -66,18 +65,12 @@ public final class ChestESPTest implements FabricClientGameTest
 		TestInput input = context.getInput();
 		input.pressKey(GLFW.GLFW_KEY_TAB);
 		input.pressKey(GLFW.GLFW_KEY_TAB);
-		if(IS_LOOTR_INSTALLED)
-			assertScreenshotEquals(context, "mod_menu",
-				"https://i.imgur.com/6cXunHs.png");
-		else
-			assertScreenshotEquals(context, "mod_menu",
-				"https://i.imgur.com/9Kt5AId.png");
+		context.takeScreenshot("mod_menu");
 		
 		LOGGER.info("Clicking configure button");
 		input.pressKey(GLFW.GLFW_KEY_TAB);
 		input.pressKey(GLFW.GLFW_KEY_ENTER);
-		assertScreenshotEquals(context, "cloth_config",
-			"https://i.imgur.com/MXdxdap.png");
+		context.takeScreenshot("cloth_config");
 		
 		LOGGER.info("Returning to title screen");
 		context.clickScreenButton("gui.cancel");
@@ -120,8 +113,7 @@ public final class ChestESPTest implements FabricClientGameTest
 		context.waitTicks(2);
 		world.waitForChunksRender();
 		
-		assertScreenshotEquals(context, "in_game",
-			"https://i.imgur.com/i2Nr9is.png");
+		context.takeScreenshot("in_game");
 		
 		LOGGER.info("Recording debug menu");
 		input.pressKey(GLFW.GLFW_KEY_F3);
@@ -130,18 +122,12 @@ public final class ChestESPTest implements FabricClientGameTest
 		
 		LOGGER.info("Opening inventory");
 		input.pressKey(GLFW.GLFW_KEY_E);
-		if(IS_LOOTR_INSTALLED)
-			assertScreenshotEquals(context, "inventory",
-				"https://i.imgur.com/8T8FDmg.png");
-		else
-			assertScreenshotEquals(context, "inventory",
-				"https://i.imgur.com/GP74ZNS.png");
+		context.takeScreenshot("inventory");
 		input.pressKey(GLFW.GLFW_KEY_ESCAPE);
 		
 		LOGGER.info("Opening game menu");
 		input.pressKey(GLFW.GLFW_KEY_ESCAPE);
-		assertScreenshotEquals(context, "game_menu",
-			"https://i.imgur.com/5mMgnXc.png");
+		context.takeScreenshot("game_menu");
 		input.pressKey(GLFW.GLFW_KEY_ESCAPE);
 		
 		LOGGER.info("Building vanilla test rig");

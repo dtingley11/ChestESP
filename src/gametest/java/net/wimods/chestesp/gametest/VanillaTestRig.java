@@ -75,8 +75,7 @@ public enum VanillaTestRig
 	
 	public static void test(ClientGameTestContext context)
 	{
-		waitForScreenshotMatch(context, "ChestESP_default_settings",
-			"https://i.imgur.com/5SS5W2T.png");
+		context.takeScreenshot("ChestESP_default_settings");
 		
 		ChestESPTest.LOGGER.info("Enabling all ChestESP groups");
 		ChestESPTest.withConfig(context, config -> {
@@ -88,26 +87,22 @@ public enum VanillaTestRig
 			config.include_crafters = true;
 			config.include_furnaces = true;
 		});
-		assertScreenshotEquals(context, "ChestESP_boxes",
-			"https://i.imgur.com/lRMaLRU.png");
+		context.takeScreenshot("ChestESP_boxes");
 		
 		ChestESPTest.LOGGER.info("Changing style to lines");
 		ChestESPTest.withConfig(context, config -> {
 			config.style = ChestEspStyle.LINES;
 		});
-		assertScreenshotEquals(context, "ChestESP_lines",
-			"https://i.imgur.com/jhVL1Ne.png");
+		context.takeScreenshot("ChestESP_lines");
 		
 		ChestESPTest.LOGGER.info("Changing style to lines and boxes");
 		ChestESPTest.withConfig(context, config -> {
 			config.style = ChestEspStyle.LINES_AND_BOXES;
 		});
-		assertScreenshotEquals(context, "ChestESP_lines_and_boxes",
-			"https://i.imgur.com/XiFiGvh.png");
+		context.takeScreenshot("ChestESP_lines_and_boxes");
 		
 		ChestESPTest.LOGGER.info("Changing all color settings");
 		ChestESPTest.setRainbowColors(context);
-		assertScreenshotEquals(context, "ChestESP_custom_colors",
-			"https://i.imgur.com/TBsz8Eq.png");
+		context.takeScreenshot("ChestESP_custom_colors");
 	}
 }

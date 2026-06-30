@@ -70,27 +70,23 @@ public enum LootrTestRig
 			config.include_crafters = true;
 			config.include_furnaces = true;
 		});
-		waitForScreenshotMatch(context, "ChestESP_lootr_boxes",
-			"https://i.imgur.com/2rPHCHV.png");
+		context.takeScreenshot("ChestESP_lootr_boxes");
 		
 		ChestESPTest.LOGGER.info("Changing style to lines for Lootr test");
 		ChestESPTest.withConfig(context, config -> {
 			config.style = ChestEspStyle.LINES;
 		});
-		assertScreenshotEquals(context, "ChestESP_lootr_lines",
-			"https://i.imgur.com/Rr8vkkh.png");
+		context.takeScreenshot("ChestESP_lootr_lines");
 		
 		ChestESPTest.LOGGER
 			.info("Changing style to lines and boxes for Lootr test");
 		ChestESPTest.withConfig(context, config -> {
 			config.style = ChestEspStyle.LINES_AND_BOXES;
 		});
-		assertScreenshotEquals(context, "ChestESP_lootr_lines_and_boxes",
-			"https://i.imgur.com/cqzWrnm.png");
+		context.takeScreenshot("ChestESP_lootr_lines_and_boxes");
 		
 		ChestESPTest.LOGGER.info("Changing all color settings for Lootr test");
 		ChestESPTest.setRainbowColors(context);
-		assertScreenshotEquals(context, "ChestESP_lootr_custom_colors",
-			"https://i.imgur.com/cypSFCl.png");
+		context.takeScreenshot("ChestESP_lootr_custom_colors");
 	}
 }

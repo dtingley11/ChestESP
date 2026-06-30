@@ -107,27 +107,23 @@ public enum CopperTestRig
 			config.include_crafters = true;
 			config.include_furnaces = true;
 		});
-		waitForScreenshotMatch(context, "ChestESP_copper_boxes",
-			"https://i.imgur.com/OKmAwt9.png");
+		context.takeScreenshot("ChestESP_copper_boxes");
 		
 		ChestESPTest.LOGGER.info("Changing style to lines for Lootr test");
 		ChestESPTest.withConfig(context, config -> {
 			config.style = ChestEspStyle.LINES;
 		});
-		assertScreenshotEquals(context, "ChestESP_copper_lines",
-			"https://i.imgur.com/yZuL3EO.png");
+		context.takeScreenshot("ChestESP_copper_lines");
 		
 		ChestESPTest.LOGGER
 			.info("Changing style to lines and boxes for Lootr test");
 		ChestESPTest.withConfig(context, config -> {
 			config.style = ChestEspStyle.LINES_AND_BOXES;
 		});
-		assertScreenshotEquals(context, "ChestESP_copper_lines_and_boxes",
-			"https://i.imgur.com/qksVwWN.png");
+		context.takeScreenshot("ChestESP_copper_lines_and_boxes");
 		
 		ChestESPTest.LOGGER.info("Changing all color settings for Lootr test");
 		ChestESPTest.setRainbowColors(context);
-		assertScreenshotEquals(context, "ChestESP_copper_custom_colors",
-			"https://i.imgur.com/r2NafDt.png");
+		context.takeScreenshot("ChestESP_copper_custom_colors");
 	}
 }

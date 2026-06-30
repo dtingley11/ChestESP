@@ -28,8 +28,7 @@ public enum ChestEspPipelines
 	 * Similar to the RENDERTYPE_LINES Snippet, but without fog.
 	 */
 	public static final Snippet FOGLESS_LINES_SNIPPET = RenderPipeline
-		.builder(RenderPipelines.MATRICES_FOG_SNIPPET,
-			RenderPipelines.GLOBALS_SNIPPET)
+		.builder(RenderPipelines.MATRICES_FOG_SNIPPET)
 		.withVertexShader(Identifier.parse("chestesp:core/fogless_lines"))
 		.withFragmentShader(Identifier.parse("chestesp:core/fogless_lines"))
 		.withColorTargetState(new ColorTargetState(BlendFunction.TRANSLUCENT))
