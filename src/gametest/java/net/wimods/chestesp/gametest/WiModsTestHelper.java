@@ -33,9 +33,7 @@ import net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotCompa
 import net.fabricmc.fabric.api.client.gametest.v1.screenshot.TestScreenshotComparisonAlgorithm.RawImage;
 import net.fabricmc.fabric.impl.client.gametest.screenshot.TestScreenshotComparisonAlgorithms.RawImageImpl;
 import net.fabricmc.fabric.impl.client.gametest.threading.ThreadingImpl;
-import net.minecraft.client.gui.screens.TitleScreen;
 import net.minecraft.commands.CommandSourceStack;
-import net.wimods.chestesp.gametest.mixin.MinecraftAccessor;
 
 public enum WiModsTestHelper
 {
@@ -212,13 +210,7 @@ public enum WiModsTestHelper
 	 */
 	public static void waitForTitleScreenFade(ClientGameTestContext context)
 	{
-		context.waitFor(mc -> {
-			if(!(((MinecraftAccessor)mc)
-				.chestesp_getScreen() instanceof TitleScreen titleScreen))
-				return false;
-			
-			return !titleScreen.fading;
-		});
+		context.waitTicks(100);
 	}
 	
 	public static void runCommand(TestServerContext server, String command)
